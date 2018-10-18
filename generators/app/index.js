@@ -3,7 +3,7 @@ const Generator = require('yeoman-generator');
 // Const chalk = require('chalk');
 const yosay = require('yosay');
 const pkg = require('../../package.json');
-// Const askName = require('inquirer-npm-name');
+const path = require('path');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
@@ -13,35 +13,50 @@ module.exports = class extends Generator {
       nmp: false,
       bower: false
     };
+    this.props = {};
   }
 
   prompting() {
     this.log(yosay(`Qgoda generator version ${pkg.version}`));
 
-    const prompts = [
-      //            {
-      //                type: 'confirm',
-      //                name: 'someAnswer',
-      //                message: 'Would you like to enable this option?',
-      //                default: true
-      //            }
-    ];
+    var name = this.props.name;
+    if (!(name && name.length)) {
+      name = path.basename(process.cwd());
+    }
+    const namePrompt = {
+      type: 'input',
+      name: 'name',
+      message: 'What is the name of your web site',
+      default: name
+    };
+
+    const prompts = [namePrompt];
 
     return this.prompt(prompts).then(props => {
-      // To access props later use this.props.someAnswer;
       this.props = props;
     });
   }
 
   writing() {
-    this.fs.copy(
-      this.templatePath('favicon.png'),
-      this.destinationPath('images/favicon.png')
-    );
-    this.fs.copy(this.templatePath('index.md'), this.destinationPath('index.md'));
+    const copies = [
+      'index.md',
+      'favicon.ico',
+      'static/images/favicon.png',
+      '_views/default.html',
+      '_views/raw',
+      '_views/functions/setup.tt',
+      '_views/functions/scripts.tt',
+      '_views/functions/styles.tt',
+      '_views/partials/body.html',
+      '_views/partials/head.html',
+      '_views/wrappers/html5.html'
+    ];
+    for (var i = 0; i < copies.length; ++i) {
+      this.fs.copy(this.templatePath(copies[i]), this.destinationPath(copies[i]));
+    }
   }
 
   install() {
-    // This.installDependencies(this.installTasks);
+    // This.installDependencies(this.installTasks)
   }
 };

@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "Guido Flohr",
+      "authorEmail": "guido.flohr@cantanea.com",
+      "authorUrl": "http://www.cantanea.com/"
+    }
+  }
+}

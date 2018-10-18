@@ -6,14 +6,16 @@
 First, install [Yeoman](http://yeoman.io) and generator-qgoda using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
-npm install -g yo
-npm install -g generator-qgoda
+$ npm install -g yo
+$ npm install -g generator-qgoda
 ```
 
 Then generate your new project:
 
 ```bash
-yo qgoda
+$ mkdir /path/to/your/website
+$ cd /path/to/your/website
+$ yo qgoda
 ```
 
 ## Getting To Know Yeoman
@@ -25,8 +27,16 @@ yo qgoda
 
 ## License
 
-GPL-3.0 © [Guido Flohr](http://www.cantanea.com/)
+## Copyright
 
+Copyright (C) 2018 Guido Flohr guido.flohr@cantanea.com, all rights
+reserved.
+
+This library is free software. It comes without any warranty, to the
+extent permitted by applicable law. You can redistribute it and/or
+modify it under the terms of the Do What the Fuck You Want to Public
+License, Version 2, as published by Sam Hocevar. See
+http://www.wtfpl.net/ for more details.
 
 [npm-image]: https://badge.fury.io/js/generator-qgoda.svg
 [npm-url]: https://npmjs.org/package/generator-qgoda

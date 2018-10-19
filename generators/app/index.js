@@ -5,6 +5,8 @@ const chalk = require('chalk');
 const filter = require('gulp-filter');
 const through = require('through2');
 const banner = require('../../lib/banner');
+const yaml = require('js-yaml');
+const fs = require('fs');
 
 function highlight(string) {
 	return chalk.hex('#d78700').bold(`${string}`);
@@ -38,12 +40,34 @@ module.exports = class extends Generator {
 			default: this.determineAppname(),
 			required: false
 		});
+
+		this.qgoda = {};
+
+		this._readConfigYaml();
+		this.qgoda.config = yaml.safeLoad(this.qgoda.configData);
+	}
+
+	_readConfigYaml() {
+		try {
+			let buffer = fs.readFileSync(this.destinationPath('_config.yaml'), 'utf-8');
+			this.qgoda.configData = buffer.toString();
+		} catch (e) {
+			try {
+				let buffer = fs.readFileSync(
+					this.destinationPath('_config.yml'),
+					'utf-8'
+				);
+				this.qgoda.configData = buffer.toString();
+			} catch (e) {
+				this.qgoda.configData = '';
+			}
+		}
 	}
 
 	initializing() {
 		this.log(banner);
 		this.log();
-		this.log('\t\t\t' + highlight(`Qgoda generator version ${pkg.version}`));
+		this.log('\t\t\t' + highlight(`Qgoda Generator Version ${pkg.version}`));
 		this.log();
 	}
 
@@ -97,11 +121,11 @@ module.exports = class extends Generator {
 
 	default() {
 		try {
-			this.pjson = require(this.destinationPath('package.json'));
+			this.qgoda.pjson = require(this.destinationPath('package.json'));
 		} catch (e) {
-			this.pjson = {};
+			this.qgoda.pjson = {};
 		}
-		var pjson = this.pjson;
+		let pjson = this.qgoda.pjson;
 		pjson.name = this.answers.name;
 		if (pjson.license === undefined) pjson.license = 'UNLICENSED';
 		if (pjson.version === undefined) pjson.version = '0.1.0';
@@ -111,6 +135,8 @@ module.exports = class extends Generator {
 				pjson.author += `<${this.answers.email}>`;
 		}
 		if (pjson.keywords === undefined) pjson.keywords = ['Qgoda', 'website'];
+
+		let config = this.qgoda.config;
 	}
 
 	writing() {
@@ -136,7 +162,7 @@ module.exports = class extends Generator {
 			this.fs.copy(this.templatePath(copies[i]), this.destinationPath(copies[i]));
 		}
 
-		this.fs.extendJSON(this.destinationPath('package.json'), this.pjson);
+		this.fs.extendJSON(this.destinationPath('package.json'), this.qgoda.pjson);
 	}
 
 	install() {

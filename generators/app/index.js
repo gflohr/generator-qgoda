@@ -3,6 +3,11 @@ const Generator = require('yeoman-generator');
 const yosay = require('yosay');
 const path = require('path');
 const pkg = require('../../package.json');
+const chalk = require('chalk');
+
+function highlight(string) {
+	return chalk.hex('#d2691e').bold(`*${string}*`);
+}
 
 module.exports = class extends Generator {
 	constructor(args, opts) {
@@ -45,8 +50,26 @@ module.exports = class extends Generator {
 			{
 				type: 'input',
 				name: 'name',
-				message: 'What is the name of your web site',
-				default: this.options.name
+				message: `What is the ${highlight('name')} of your web site`,
+				default: this.options.name,
+				store: false
+			},
+			{
+				type: 'list',
+				name: 'indentation',
+				message: `Which ${highlight('indentation')} style do you want to use`,
+				choices: ['tabs', 'spaces'],
+				default: 'tabs',
+				store: true
+			},
+			{
+				type: 'list',
+				name: 'shiftwidt',
+				message: `Which ${highlight('tab size')} do you prefer`,
+				choices: ['2', '4', '8'],
+				default: '4',
+				store: true,
+				when: here => here.indentation === 'spaces'
 			}
 		];
 
@@ -56,6 +79,7 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
+		this.log(this.answers);
 		const copies = [
 			'index.md',
 			'favicon.ico',

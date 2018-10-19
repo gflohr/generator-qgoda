@@ -10,6 +10,7 @@ module.exports = class extends Generator {
 
 		this.installTasks = {
 			npm: false,
+			yarn: false,
 			bower: false
 		};
 

@@ -136,7 +136,15 @@ module.exports = class extends Generator {
 		}
 		if (pjson.keywords === undefined) pjson.keywords = ['Qgoda', 'website'];
 
+		// This should come last so that we can print meaning full error
+		// messages.
+		this.qgoda.writeConfig = this._checkConfig();
+	}
+
+	_checkConfig() {
 		let config = this.qgoda.config;
+
+		return false;
 	}
 
 	writing() {

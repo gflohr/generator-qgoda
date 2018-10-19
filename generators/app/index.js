@@ -1,6 +1,5 @@
 'use strict';
 const Generator = require('yeoman-generator');
-// Const chalk = require('chalk');
 const yosay = require('yosay');
 const pkg = require('../../package.json');
 const path = require('path');
@@ -16,24 +15,27 @@ module.exports = class extends Generator {
 		this.props = {};
 	}
 
-	prompting() {
+	initializing() {
 		this.log(yosay(`Qgoda generator version ${pkg.version}`));
+	}
 
+	prompting() {
 		var name = this.props.name;
 		if (!(name && name.length)) {
 			name = path.basename(process.cwd());
 		}
-		const namePrompt = {
-			type: 'input',
-			name: 'name',
-			message: 'What is the name of your web site',
-			default: name
-		};
 
-		const prompts = [namePrompt];
+		const prompts = [
+			{
+				type: 'input',
+				name: 'name',
+				message: 'What is the name of your web site',
+				default: name
+			}
+		];
 
-		return this.prompt(prompts).then(props => {
-			this.props = props;
+		return this.prompt(prompts).then(answers => {
+			this.props = answers;
 		});
 	}
 

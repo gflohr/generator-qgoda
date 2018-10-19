@@ -6,9 +6,6 @@ charset = utf-8
 indent_style = tab
 indent_size = 4
 
-[tests/languages/**.test]
-end_of_line = crlf
-
 [{package.json,.travis.yml}]
 indent_style = space
-indent_size = 2u
+indent_size = 2

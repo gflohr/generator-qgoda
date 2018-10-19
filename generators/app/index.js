@@ -31,14 +31,6 @@ module.exports = class extends Generator {
 			bower: false
 		};
 
-		// Read an existing package.json.
-		// var dpackage;
-		// try {
-		//	dpackage = require(this.destinationPath('package.json'));
-		// } catch (e) {
-		//	dpackage = {};
-		// }
-
 		this.option('name', {
 			type: String,
 			alias: 'n',
@@ -65,6 +57,21 @@ module.exports = class extends Generator {
 				store: false
 			},
 			{
+				type: 'input',
+				name: 'author',
+				message: `What is your ${highlight('name')}`,
+				default: this.user.git.name(),
+				store: true
+			},
+			{
+				type: 'input',
+				name: 'email',
+				message: `What is your ${highlight('email address')}`,
+				default: this.user.git.email(),
+				when: here => here.author !== undefined,
+				store: true
+			},
+			{
 				type: 'list',
 				name: 'indentation',
 				message: `Which ${highlight('indentation')} style do you want to use`,
@@ -88,11 +95,28 @@ module.exports = class extends Generator {
 		});
 	}
 
+	default() {
+		try {
+			this.pjson = require(this.destinationPath('package.json'));
+		} catch (e) {
+			this.pjson = {};
+		}
+		var pjson = this.pjson;
+		pjson.name = this.answers.name;
+		if (pjson.license === undefined) pjson.license = 'UNLICENSED';
+		if (pjson.version === undefined) pjson.version = '0.1.0';
+		if (this.answers.author !== undefined) {
+			pjson.author = this.answers.author;
+			if (this.answers.email !== undefined)
+				pjson.author += `<${this.answers.email}>`;
+		}
+		if (pjson.keywords === undefined) pjson.keywords = ['Qgoda', 'website'];
+	}
+
 	writing() {
 		const f = filter(['**', '!**/*.md', '!**/*.png', '!**/*.ico'], {
 			restore: true
 		});
-
 		this.registerTransformStream([f, indenter(this.answers), f.restore]);
 
 		const copies = [
@@ -111,6 +135,8 @@ module.exports = class extends Generator {
 		for (var i = 0; i < copies.length; ++i) {
 			this.fs.copy(this.templatePath(copies[i]), this.destinationPath(copies[i]));
 		}
+
+		this.fs.extendJSON(this.destinationPath('package.json'), this.pjson);
 	}
 
 	install() {

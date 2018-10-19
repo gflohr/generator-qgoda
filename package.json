@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "chalk": "^2.1.0",
+    "gulp-filter": "^5.1.0",
     "lodash": "^4.17.11",
     "yeoman-generator": "^2.0.1",
     "yosay": "^2.0.1"

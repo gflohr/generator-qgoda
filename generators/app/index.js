@@ -1,12 +1,25 @@
 'use strict';
 const Generator = require('yeoman-generator');
-const yosay = require('yosay');
 const path = require('path');
 const pkg = require('../../package.json');
 const chalk = require('chalk');
+const filter = require('gulp-filter');
+const through = require('through2');
+const banner = require('../../lib/banner');
 
 function highlight(string) {
-	return chalk.hex('#d2691e').bold(`*${string}*`);
+	return chalk.hex('#d78700').bold(`${string}`);
+}
+
+function indenter(options) {
+	return through.obj(function(file, encoding, callback) {
+		if (options.indentation === 'spaces') {
+			var spaces = ' '.repeat(options.tabsize);
+			var formatted = file.contents.toString().replace(/\t/g, spaces);
+			file.contents = Buffer.from(formatted);
+		}
+		callback(null, file);
+	});
 }
 
 module.exports = class extends Generator {
@@ -42,7 +55,10 @@ module.exports = class extends Generator {
 	}
 
 	initializing() {
-		this.log(yosay(`Qgoda generator version ${pkg.version}`));
+		this.log(banner);
+		this.log();
+		this.log('\t\t\t' + highlight(`Qgoda generator version ${pkg.version}`));
+		this.log();
 	}
 
 	prompting() {
@@ -64,7 +80,7 @@ module.exports = class extends Generator {
 			},
 			{
 				type: 'list',
-				name: 'shiftwidt',
+				name: 'tabsize',
 				message: `Which ${highlight('tab size')} do you prefer`,
 				choices: ['2', '4', '8'],
 				default: '4',
@@ -79,7 +95,12 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
-		this.log(this.answers);
+		const f = filter(['**', '!**/*.md', '!**/*.png', '!**/*.ico'], {
+			restore: true
+		});
+
+		this.registerTransformStream([f, indenter(this.answers), f.restore]);
+
 		const copies = [
 			'index.md',
 			'favicon.ico',

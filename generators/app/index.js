@@ -1,8 +1,8 @@
 'use strict';
 const Generator = require('yeoman-generator');
 const yosay = require('yosay');
-const pkg = require('../../package.json');
 const path = require('path');
+const pkg = require('../../package.json');
 
 module.exports = class extends Generator {
 	constructor(args, opts) {
@@ -12,7 +12,27 @@ module.exports = class extends Generator {
 			npm: false,
 			bower: false
 		};
-		this.props = {};
+
+		// Read an existing package.json.
+		var dpackage;
+		try {
+			dpackage = require(this.destinationPath('package.json'));
+		} catch (e) {
+			dpackage = {};
+		}
+
+		if (!dpackage.name !== undefined) {
+			// Initialize with defaults.
+			dpackage.name = path.basename(process.cwd());
+		}
+
+		this.option('name', {
+			type: String,
+			alias: 'n',
+			desc: 'package name of your site',
+			default: dpackage.name,
+			required: false
+		});
 	}
 
 	initializing() {
@@ -20,22 +40,17 @@ module.exports = class extends Generator {
 	}
 
 	prompting() {
-		var name = this.props.name;
-		if (!(name && name.length)) {
-			name = path.basename(process.cwd());
-		}
-
 		const prompts = [
 			{
 				type: 'input',
 				name: 'name',
 				message: 'What is the name of your web site',
-				default: name
+				default: this.options.name
 			}
 		];
 
 		return this.prompt(prompts).then(answers => {
-			this.props = answers;
+			this.answers = answers;
 		});
 	}
 

@@ -6,57 +6,57 @@ const pkg = require('../../package.json');
 const path = require('path');
 
 module.exports = class extends Generator {
-  constructor(args, opts) {
-    super(args, opts);
+	constructor(args, opts) {
+		super(args, opts);
 
-    this.installTasks = {
-      nmp: false,
-      bower: false
-    };
-    this.props = {};
-  }
+		this.installTasks = {
+			npm: false,
+			bower: false
+		};
+		this.props = {};
+	}
 
-  prompting() {
-    this.log(yosay(`Qgoda generator version ${pkg.version}`));
+	prompting() {
+		this.log(yosay(`Qgoda generator version ${pkg.version}`));
 
-    var name = this.props.name;
-    if (!(name && name.length)) {
-      name = path.basename(process.cwd());
-    }
-    const namePrompt = {
-      type: 'input',
-      name: 'name',
-      message: 'What is the name of your web site',
-      default: name
-    };
+		var name = this.props.name;
+		if (!(name && name.length)) {
+			name = path.basename(process.cwd());
+		}
+		const namePrompt = {
+			type: 'input',
+			name: 'name',
+			message: 'What is the name of your web site',
+			default: name
+		};
 
-    const prompts = [namePrompt];
+		const prompts = [namePrompt];
 
-    return this.prompt(prompts).then(props => {
-      this.props = props;
-    });
-  }
+		return this.prompt(prompts).then(props => {
+			this.props = props;
+		});
+	}
 
-  writing() {
-    const copies = [
-      'index.md',
-      'favicon.ico',
-      'static/images/favicon.png',
-      '_views/default.html',
-      '_views/raw',
-      '_views/functions/setup.tt',
-      '_views/functions/scripts.tt',
-      '_views/functions/styles.tt',
-      '_views/partials/body.html',
-      '_views/partials/head.html',
-      '_views/wrappers/html5.html'
-    ];
-    for (var i = 0; i < copies.length; ++i) {
-      this.fs.copy(this.templatePath(copies[i]), this.destinationPath(copies[i]));
-    }
-  }
+	writing() {
+		const copies = [
+			'index.md',
+			'favicon.ico',
+			'static/images/favicon.png',
+			'_views/default.html',
+			'_views/raw',
+			'_views/functions/setup.tt',
+			'_views/functions/scripts.tt',
+			'_views/functions/styles.tt',
+			'_views/partials/body.html',
+			'_views/partials/head.html',
+			'_views/wrappers/html5.html'
+		];
+		for (var i = 0; i < copies.length; ++i) {
+			this.fs.copy(this.templatePath(copies[i]), this.destinationPath(copies[i]));
+		}
+	}
 
-  install() {
-    // This.installDependencies(this.installTasks)
-  }
+	install() {
+		// This.installDependencies(this.installTasks)
+	}
 };

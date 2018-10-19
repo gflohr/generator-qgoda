@@ -1,6 +1,5 @@
 'use strict';
 const Generator = require('yeoman-generator');
-const path = require('path');
 const pkg = require('../../package.json');
 const chalk = require('chalk');
 const filter = require('gulp-filter');
@@ -33,23 +32,18 @@ module.exports = class extends Generator {
 		};
 
 		// Read an existing package.json.
-		var dpackage;
-		try {
-			dpackage = require(this.destinationPath('package.json'));
-		} catch (e) {
-			dpackage = {};
-		}
-
-		if (!dpackage.name !== undefined) {
-			// Initialize with defaults.
-			dpackage.name = path.basename(process.cwd());
-		}
+		// var dpackage;
+		// try {
+		//	dpackage = require(this.destinationPath('package.json'));
+		// } catch (e) {
+		//	dpackage = {};
+		// }
 
 		this.option('name', {
 			type: String,
 			alias: 'n',
 			desc: 'package name of your site',
-			default: dpackage.name,
+			default: this.determineAppname(),
 			required: false
 		});
 	}

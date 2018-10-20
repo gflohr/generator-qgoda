@@ -1,6 +1,6 @@
 {
   "name": "generator-qgoda",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Generate a new Qgoda site with yeoman.",
   "homepage": "http://www.qgoda.net/",
   "author": {
